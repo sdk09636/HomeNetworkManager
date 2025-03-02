@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DNS Blocklist</title>
+</head>
+<body>
+    <h2>Blocked Sites</h2>
+    <ul>
+        <% blocklist.forEach(site => { %>
+            <li><%= site.replace('address=/', '').replace('/0.0.0.0', '') %>
+                <form action="/unblock" method="post" style="display:inline;">
+                    <input type="hidden" name="site" value="<%= site.replace('address=/', '').replace('/0.0.0.0', '') %>">
+                    <button type="submit">Unblock</button>
+                </form>
+            </li>
+        <% }) %>
+    </ul>
+
+    <h3>Block a New Site</h3>
+    <form action="/block" method="post">
+        <input type="text" name="site" placeholder="example.com" required>
+        <button type="submit">Block</button>
+    </form>
+</body>
+</html>
