@@ -12,17 +12,19 @@ app.use(express.urlencoded({ extended: true }));
 // Load blocked sites
 const loadBlocklist = () => {
     if (!fs.existsSync(BLOCKLIST_FILE)) return [];
-    return fs.readFileSync(BLOCKLIST_FILE, 'utf-8').split('\n').filter(Boolean);
+    const op = fs.readFileSync(BLOCKLIST_FILE, 'utf-8').split('\n').filter(Boolean);
+    console.log(op);
+    return op;
 };
 
 
-// // Save blocked sites
-// const saveBlocklist = (blocklist) => {
-//     fs.writeFileSync(BLOCKLIST_FILE, blocklist.join('\n'));
-//     exec('systemctl restart dnsmasq', (error) => {
-//         if (error) console.error('Failed to restart dnsmasq:', error);
-//     });
-// };
+// Save blocked sites
+const saveBlocklist = (blocklist) => {
+    fs.writeFileSync(BLOCKLIST_FILE, blocklist.join('\n'));
+    exec('systemctl restart dnsmasq', (error) => {
+        if (error) console.error('Failed to restart dnsmasq:', error);
+    });
+};
 
 // // Homepage
 app.get('/', (req, res) => {
@@ -40,13 +42,13 @@ app.post('/block', (req, res) => {
     res.redirect('/');
 });
 
-// // Remove site from blocklist
-// app.post('/unblock', (req, res) => {
-//     const site = req.body.site.trim();
-//     const blocklist = loadBlocklist().filter(s => !s.includes(site));
-//     saveBlocklist(blocklist);
-//     res.redirect('/');
-// });
+// Remove site from blocklist
+app.post('/unblock', (req, res) => {
+    const site = req.body.site.trim();
+    const blocklist = loadBlocklist().filter(s => !s.includes(site));
+    saveBlocklist(blocklist);
+    res.redirect('/');
+});
 
 app.listen(PORT, () => {
     console.log(`Server running on http://localhost:${PORT}`);
