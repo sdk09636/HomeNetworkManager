@@ -29,11 +29,12 @@ const saveBlocklist = (blocklist) => {
 };
 
 
-// Check for line in conf file
+// Check for a line in a file
 function ensureLineExists(config, line) {
   return config.split("\n").some(l => l.trim() === line);
 }
 
+// Check if log-queries is on in dnsmasq.conf, if not then turn it on.
 fs.readFile(CONFIG_FILE, "utf8", (err, config) => {
   if (err) {
     console.error("Failed to read dnsmasq.conf:", err.message);
