@@ -53,7 +53,7 @@ fs.readFile(CONFIG_FILE, "utf8", (err, config) => {
   }
 
   if (updated) {
-    fs.writeFile(configFile, config, "utf8", (err) => {
+    fs.writeFile(CONFIG_FILE, config, "utf8", (err) => {
       if (err) {
         console.error("Failed to write dnsmasq.conf:", err.message);
         return;
