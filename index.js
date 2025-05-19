@@ -62,7 +62,7 @@ fs.readFile(CONFIG_FILE, "utf8", (err, config) => {
       console.log("Updated dnsmasq.conf with log settings.");
       console.log("Restarting dnsmasq...");
 
-      exec("sudo systemctl restart dnsmasq", (err, stdout, stderr) => {
+      exec("systemctl restart dnsmasq", (err, stdout, stderr) => {
         if (err) {
           console.error("Failed to restart dnsmasq:", stderr.trim());
           return;
