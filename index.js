@@ -2,11 +2,16 @@ const express = require('express');
 const fs = require('fs');
 const { exec, spawn } = require('child_process');
 const readline = require("readline");
+const http = require("http");
+const socketIO = require("socket.io");
 
 const app = express();
 const PORT = 3000;
 const BLOCKLIST_FILE = '/etc/dnsmasq.d/blocklist.conf';
 const CONFIG_FILE = '/etc/dnsmasq.conf';
+
+const server = http.createServer(app);
+const io = socketIO(server);
 
 
 app.set('view engine', 'ejs');
@@ -96,6 +101,7 @@ const blockedDomains = loadBlocklist().map(line => {
 rl.on("line", line => {
   for (const domain of blockedDomains) {
     if (line.includes(domain)) {
+      io.emit("dnsLog", line);
       console.log(line);
       break;
     }
@@ -130,6 +136,6 @@ app.post('/unblock', (req, res) => {
     res.redirect('/');
 });
 
-app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+server.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
 });

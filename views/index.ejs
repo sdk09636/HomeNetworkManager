@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DNS Blocklist</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+
+        #logs { max-height: 80vh; overflow-y: auto; white-space: pre-wrap; }
+    </style>
 </head>
 <body>
     <h2>Blocked Sites</h2>
@@ -23,5 +28,20 @@
         <input type="text" name="site" placeholder="example.com" required>
         <button type="submit">Block</button>
     </form>
+
+    <h1>Blocked DNS Requests</h1>
+    <div id="logs"></div>
+
+    <script>
+        const socket = io();
+        const logs = document.getElementById("logs");
+
+        socket.on("dnsLog", line => {
+            const el = document.createElement("div");
+            el.textContent = line;
+            logs.appendChild(el);
+            logs.scrollTop = logs.scrollHeight;
+        });
+    </script>
 </body>
 </html>
