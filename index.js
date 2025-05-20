@@ -76,6 +76,35 @@ fs.readFile(CONFIG_FILE, "utf8", (err, config) => {
   }
 });
 
+// Monitor Requests to dnsmasq
+
+const tail = spawn("tail", ["-F", "/var/log/dnsmasq.log"]);
+
+const rl = readline.createInterface({
+  input: tail.stdout,
+  output: process.stdout,
+  terminal: false,
+});
+
+const blockedDomains = loadBlocklist().map(line => {
+      const match = line.match(/\/([^/]+)\//);
+      return match ? match[1] : null;
+    })
+    .filter(Boolean);
+
+rl.on("line", line => {
+  for (const domain of blockedDomains) {
+    if (line.includes(domain)) {
+      console.log(line);
+      break;
+    }
+  }
+});
+
+tail.stderr.on("data", data => {
+  console.error(`tail stderr: ${data}`);
+});
+
 // // Homepage
 app.get('/', (req, res) => {
     res.render('index', { blocklist: loadBlocklist() });
