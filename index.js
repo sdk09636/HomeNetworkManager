@@ -125,6 +125,7 @@ function loadNetInterfaces() {
       }
     }
   }
+  console.log(addresses);
   return addresses;
 }
 
