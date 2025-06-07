@@ -29,6 +29,13 @@
         <button type="submit">Block</button>
     </form>
 
+    <h3>Monitor Hosts</h3>
+    <ul>
+        <% interfaces.forEach( i => {  %>
+            <li><% i %></li>
+        <% }) %>
+    </ul>
+
     <h3>Blocked DNS Requests</h3>
     <div id="logs"></div>
 

@@ -4,6 +4,7 @@ const { exec, spawn } = require('child_process');
 const readline = require("readline");
 const http = require("http");
 const socketIO = require("socket.io");
+const os = require('os');
 
 const app = express();
 const PORT = 3000;
@@ -112,9 +113,28 @@ tail.stderr.on("data", data => {
   console.error(`tail stderr: ${data}`);
 });
 
+// Host Discovery
+
+function loadNetInterfaces() {
+  const interfaces = os.networkInterfaces;
+  const addresses = [];
+  for (const name of Object.keys(interfaces)) {
+    for (const iface of interfaces[name]) {
+      if (iface.family === 'IPv4' && !iface.internal) {
+        addresses.push(iface.name);
+      }
+    }
+  }
+  return addresses;
+}
+
+// function hostDicovery() {
+  
+// }
+
 // // Homepage
 app.get('/', (req, res) => {
-    res.render('index', { blocklist: loadBlocklist() });
+    res.render('index', { blocklist: loadBlocklist(), interfaces: loadNetInterfaces()});
 });
 
 // // Add site to blocklist
