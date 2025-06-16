@@ -116,7 +116,7 @@ tail.stderr.on("data", data => {
 // Host Discovery
 
 function loadNetInterfaces() {
-  const interfaces = os.networkInterfaces;
+  const interfaces = os.networkInterfaces();
   const addresses = [];
   for (const name of Object.keys(interfaces)) {
     for (const iface of interfaces[name]) {
