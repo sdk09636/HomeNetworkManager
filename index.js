@@ -160,8 +160,24 @@ app.post('/unblock', (req, res) => {
 
 // Monitor hosts
 app.post('/loadHosts/:interface', (req, res) => {
+    const interfaces = os.networkInterfaces();
     const i = req.params.interface;
-    exec(`sudo nmap ${ i }`, (error, stdout, stderr) => {
+
+    if(!interfaces[i]) {
+      return res.status(400).send('Invalid interface name');
+    }
+
+    let cidr;
+    const iDetails = interfaces[i];
+
+    for (d of iDetails) {
+      if(d.family === 'IPv4' && d.cidr) {
+        cidr = d.cidr;
+        break;
+      }
+    }
+
+    exec(`sudo nmap -sn ${ cidr }`, (error, stdout, stderr) => {
       if (error) {
         console.error(error);
         return res.status(500).send(`Error: ${stderr}`);
