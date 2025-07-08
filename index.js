@@ -5,6 +5,7 @@ const readline = require("readline");
 const http = require("http");
 const socketIO = require("socket.io");
 const os = require('os');
+const { error } = require('console');
 
 const app = express();
 const PORT = 3000;
@@ -155,6 +156,18 @@ app.post('/unblock', (req, res) => {
     const blocklist = loadBlocklist().filter(s => !s.includes(site));
     saveBlocklist(blocklist);
     res.redirect('/');
+});
+
+// Monitor hosts
+app.post('/loadHosts/:interface', (req, res) => {
+    const i = req.params.interface;
+    exec(`sudo nmap ${ i }`, (error, stdout, stderr) => {
+      if (error) {
+        console.error(error);
+        return res.status(500).send(`Error: ${stderr}`);
+      };
+      res.send(stdout);
+    });
 });
 
 server.listen(PORT, () => {
