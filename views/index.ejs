@@ -32,7 +32,9 @@
     <h3>Monitor Hosts</h3>
     <ul>
         <% interfaces.forEach( i => {  %>
-            <li><%= i %></li>
+            <form action="loadHosts/<%= i %>">
+                <input type="button" value="<%= i %>">
+            </form>
         <% }) %>
     </ul>
 
