@@ -32,11 +32,16 @@
     <h3>Monitor Hosts</h3>
     <ul>
         <% interfaces.forEach( i => {  %>
-            <form action="loadHosts/<%= i %>", method="post">
+            <form id="<%= i %>">
                 <input type="submit" value="<%= i %>">
             </form>
         <% }) %>
     </ul>
+
+    <h3>Hosts</h3>
+    <p id="hostsDetail" hidden>
+
+    </p>
 
     <h3>Blocked DNS Requests</h3>
     <div id="logs"></div>
@@ -44,6 +49,7 @@
     <script>
         const socket = io();
         const logs = document.getElementById("logs");
+        const hostsDetail = document.getElementById("hostsDetail");
 
         socket.on("dnsLog", line => {
             const el = document.createElement("div");
@@ -51,6 +57,18 @@
             logs.appendChild(el);
             logs.scrollTop = logs.scrollHeight;
         });
+
+        for(i of interfaces) {
+            document.getElementById(i).addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const response = await fetch(`/loadHosts/${ i }`, {
+                    method: "POST",
+                });
+                hostsDetail.removeAttribute("hidden");
+                const text = await response.text();
+                hostsDetail.textContent = text;
+            });
+        };
     </script>
 </body>
 </html>
