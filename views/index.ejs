@@ -50,6 +50,7 @@
         const socket = io();
         const logs = document.getElementById("logs");
         const hostsDetail = document.getElementById("hostsDetail");
+        const interfaces = <%- JSON.stringify(interfaces) %>;
 
         socket.on("dnsLog", line => {
             const el = document.createElement("div");
